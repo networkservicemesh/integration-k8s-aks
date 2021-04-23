@@ -1,0 +1,12 @@
+---
+executions:
+  - name: "tests"
+    env:
+      - ARTIFACTS_ARCHIVE=true
+    root: ./
+    timeout: 3600
+    cluster-count: 1
+    cluster-selector:
+      - azure
+    cluster-env:
+      - KUBECONFIG

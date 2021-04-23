@@ -59,3 +59,60 @@ jobs:
         run: |
           git diff --name-only --exit-code go.mod || ( echo "Run go tidy" && false )
           git diff --name-only --exit-code go.sum || ( echo "Run go tidy" && false )
+  azure:
+    environment: AKS
+    name: Azure Kubernetes Service
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install azure-cli
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.19.1
+          inlineScript: |
+            az version
+      - name: Set up azure permissions
+        run: |
+          sudo chmod -R 777 ~/.azure
+      - name: Set up /bin permissions
+        run: |
+          sudo chmod -R 777 /bin
+      - name: Set up go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+      - name: Install cloudtest
+        run: |
+          go get github.com/networkservicemesh/cloudtest@master
+        env:
+          GO111MODULE: on
+          GOBIN: /bin
+      - name: Checkout deployments
+        uses: actions/checkout@v2
+        with:
+          repository: networkservicemesh/deployments-k8s
+          path: networkservicemesh/deployments-k8s
+      - name: Checkout files
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.repository }}
+      - name: Run tests with cloudtest
+        working-directory: ${{ github.repository }}
+        run: |
+          cloudtest
+        env:
+          AZURE_SERVICE_PRINCIPAL: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+          AZURE_SERVICE_PRINCIPAL_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
+          AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v2.1.0
+        if: ${{ always() }}
+        with:
+          report_paths: "**/cloud_test/results/junit.xml"
+          suite_regex: "Test*"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload logs
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: logs-${{ github.run_number }}
+          path: ${{ github.repository }}/.tests/cloud_test/
