@@ -1,1 +1,1 @@
-# https-github.com-networkservicemesh-integration-k8s-aks
+# integration-k8s-aks
