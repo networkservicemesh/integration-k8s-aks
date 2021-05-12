@@ -16,7 +16,24 @@
 
 package main_test
 
-import "testing"
+import (
+	"testing"
 
-func Test(t *testing.T) {
+	"github.com/stretchr/testify/suite"
+
+	"github.com/networkservicemesh/integration-tests/suites/basic"
+	"github.com/networkservicemesh/integration-tests/suites/features"
+	"github.com/networkservicemesh/integration-tests/suites/memory"
+)
+
+func TestRunFeatureSuite(t *testing.T) {
+	suite.Run(t, new(features.Suite))
+}
+
+func TestRunBasicSuite(t *testing.T) {
+	suite.Run(t, new(basic.Suite))
+}
+
+func TestRunMemorySuite(t *testing.T) {
+	suite.Run(t, new(memory.Suite))
 }
