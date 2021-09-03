@@ -38,6 +38,7 @@ register_feature VMSSPreview Microsoft.ContainerService
 register_feature NodePublicIPPreview Microsoft.ContainerService
 az provider register -n Microsoft.ContainerService
 echo -n "Creating AKS cluster '$AZURE_CLUSTER_NAME'..."
+az aks get-versions --location centralus --output table
 if (az aks show --resource-group "$AZURE_RESOURCE_GROUP" --name "$AZURE_CLUSTER_NAME" > /dev/null 2>&1); then
     echo "already exists"
 else
