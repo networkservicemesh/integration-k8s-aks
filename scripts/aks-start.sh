@@ -3,8 +3,7 @@
 readonly AZURE_RESOURCE_GROUP=$1
 readonly AZURE_CLUSTER_NAME=$2
 readonly AZURE_CREDENTIALS_PATH=$3
-readonly AZURE_SERVICE_PRINCIPAL=$4
-readonly AZURE_SERVICE_PRINCIPAL_SECRET=$5
+
 if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
     echo "Usage: aks-start.sh <resource-group> <cluster-name> <kube-config-path> [<service-principal> <password>]"
     exit 1
