@@ -2,20 +2,46 @@
 
 Integration K8s AKS runs NSM system tests on AKS.
 
-[cloudtest](https://github.com/networkservicemesh/cloudtest) is used to run the tests from [deployments-k8s](https://github.com/networkservicemesh/deployments-k8s/) in AKS.
 
-You can see exactly what cloudtest does to setup a cluster in AKS [here](cloudtest/azure.yaml).
+## Requirements
 
-Effectively it just sets the indicated environment variables
+1. Install [az](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) 
+
+2. Set envs
+
 ```bash
 AZURE_CLUSTER_NAME
-AZURE_RESOURCE_GROUP=nsm-ci
-KUBECONFIG
-AZURE_CREDENTIALS_PATH
+AZURE_RESOURCE_GROUP
 AZURE_SERVICE_PRINCIPAL
 AZURE_SERVICE_PRINCIPAL_SECRET
 AZURE_TENANT
-GITHUB_RUN_NUMBER
 ```
 
-and then runs the [aks-start.sh](scripts/aks-start.sh)
+## Setup
+
+Run this command to create `AKS` cluster.
+
+```bash
+az aks create \
+    --resource-group "$AZURE_RESOURCE_GROUP" \
+    --name "$AZURE_CLUSTER_NAME" \
+    --node-count 2 \
+    --node-vm-size Standard_B2s \
+    --generate-ssh-keys \
+    --debug
+az aks wait  \
+    --name "$AZURE_CLUSTER_NAME" \
+    --resource-group "$AZURE_RESOURCE_GROUP" \
+    --created > /dev/null
+```
+
+## Cleanup
+
+Run this command to delete `AKS` cluster.
+
+```bash
+az aks delete \
+    --name "$AZURE_CLUSTER_NAME" \
+    --resource-group "$AZURE_RESOURCE_GROUP" \
+    --yes
+```
