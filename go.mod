@@ -3,7 +3,7 @@ module github.com/networkservicemesh/integration-k8s-aks
 go 1.18
 
 require (
-	github.com/networkservicemesh/integration-tests v0.0.0-20221014103906-a5d52d2ccf91
+	github.com/networkservicemesh/integration-tests v0.0.0-20221214213750-21c3167b4b3f
 	github.com/stretchr/testify v1.7.0
 )
 
@@ -14,7 +14,7 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
-	github.com/googleapis/gnostic v0.4.1 // indirect
+	github.com/googleapis/gnostic v0.5.1 // indirect
 	github.com/imdario/mergo v0.3.5 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
@@ -33,8 +33,8 @@ require (
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 	k8s.io/api v0.20.5 // indirect
 	k8s.io/apimachinery v0.20.5 // indirect
 	k8s.io/client-go v0.20.5 // indirect
