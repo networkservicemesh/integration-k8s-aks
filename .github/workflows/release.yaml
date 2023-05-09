@@ -13,24 +13,9 @@ jobs:
     steps:
       - uses: hmarr/debug-action@v2
 
-  get-tag:
-    name: Get tag
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && contains(github.event.workflow_run.head_branch, 'release/') }}
-    outputs:
-      tag: ${{ steps.get-tag-step.outputs.tag }}
-    steps:
-      - name: Get tag
-        run: |
-          branch=${{github.event.workflow_run.head_branch}}
-          echo tag=${branch#release/} >> $GITHUB_OUTPUT
-        id: get-tag-step
-
   create-release:
     name: Create release
-    needs: get-tag
+    if: ${{ github.event.workflow_run.conclusion == 'success' && contains(github.event.workflow_run.head_branch, 'release/') }}
     uses: networkservicemesh/.github/.github/workflows/release.yaml@main
-    with:
-      tag: ${{ needs.get-tag.outputs.tag }}
     secrets:
-      token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
