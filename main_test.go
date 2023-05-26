@@ -1,5 +1,7 @@
 // Copyright (c) 2021-2022 Doc.ai and/or its affiliates.
 //
+// Copyright (c) 2023 Cisco and/or its affiliates.
+//
 // SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +23,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/networkservicemesh/integration-tests/suites/afxdp"
 	"github.com/networkservicemesh/integration-tests/suites/basic"
 	"github.com/networkservicemesh/integration-tests/suites/features"
 	"github.com/networkservicemesh/integration-tests/suites/heal"
@@ -34,6 +37,10 @@ func TestRunFeatureSuite(t *testing.T) {
 
 func TestRunBasicSuite(t *testing.T) {
 	suite.Run(t, new(basic.Suite))
+}
+
+func TestRunAfxdpSuite(t *testing.T) {
+	suite.Run(t, new(afxdp.Suite))
 }
 
 func TestRunMemorySuite(t *testing.T) {
