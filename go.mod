@@ -1,6 +1,6 @@
 module github.com/networkservicemesh/integration-k8s-aks
 
-go 1.18
+go 1.20
 
 require (
 	github.com/networkservicemesh/integration-tests v0.0.0-20221014103906-a5d52d2ccf91
