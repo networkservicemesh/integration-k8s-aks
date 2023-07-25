@@ -74,7 +74,7 @@ jobs:
       - name: Run tests
         working-directory: ${{ github.repository }}
         run: |
-          go test -count 1 -timeout 1h55m -race -v ./...
+          go test -count 1 -timeout 1h55m -race -v ./... -parallel 4
         env:
           KUBECONFIG: /tmp/config
       - name: Cleanup AKS cluster

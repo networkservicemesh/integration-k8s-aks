@@ -23,6 +23,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/networkservicemesh/integration-tests/extensions/parallel"
 	"github.com/networkservicemesh/integration-tests/suites/afxdp"
 	"github.com/networkservicemesh/integration-tests/suites/basic"
 	"github.com/networkservicemesh/integration-tests/suites/features"
@@ -32,19 +33,19 @@ import (
 )
 
 func TestRunFeatureSuite(t *testing.T) {
-	suite.Run(t, new(features.Suite))
+	parallel.Run(t, new(features.Suite), "TestScale_from_zero", "TestVl3_dns", "TestVl3_scale_from_zero", "TestNse_composition", "TestSelect_forwarder")
 }
 
 func TestRunBasicSuite(t *testing.T) {
-	suite.Run(t, new(basic.Suite))
+	parallel.Run(t, new(basic.Suite))
 }
 
 func TestRunAfxdpSuite(t *testing.T) {
-	suite.Run(t, new(afxdp.Suite))
+	parallel.Run(t, new(afxdp.Suite))
 }
 
 func TestRunMemorySuite(t *testing.T) {
-	suite.Run(t, new(memory.Suite))
+	parallel.Run(t, new(memory.Suite))
 }
 
 func TestRunHealSuite(t *testing.T) {
