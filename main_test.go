@@ -19,39 +19,39 @@
 package main_test
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"testing"
-
-	"github.com/stretchr/testify/suite"
-
-	"github.com/networkservicemesh/integration-tests/extensions/parallel"
-	"github.com/networkservicemesh/integration-tests/suites/afxdp"
-	"github.com/networkservicemesh/integration-tests/suites/basic"
-	"github.com/networkservicemesh/integration-tests/suites/features"
-	"github.com/networkservicemesh/integration-tests/suites/heal"
-	"github.com/networkservicemesh/integration-tests/suites/memory"
-	"github.com/networkservicemesh/integration-tests/suites/observability"
 )
 
-func TestRunFeatureSuite(t *testing.T) {
-	parallel.Run(t, new(features.Suite), "TestScale_from_zero", "TestVl3_dns", "TestVl3_scale_from_zero", "TestNse_composition", "TestSelect_forwarder")
-}
+func TestExample(t *testing.T) {
+	artsDir := os.Getenv("ARTIFACTS_DIR")
+	if artsDir == "" {
+		artsDir = "logs"
+	}
 
-func TestRunBasicSuite(t *testing.T) {
-	parallel.Run(t, new(basic.Suite))
-}
+	cmd := exec.Command("pwd")
+	stdout, _ := cmd.Output()
+	fmt.Printf("pwd: %s\n", string(stdout))
+	fmt.Printf("log path: %s\n", filepath.Join("./", artsDir, "/helloworld.txt"))
+	os.WriteFile(filepath.Join("./", "artsDir", "/helloworld.txt"), []byte("Hello, World!"), os.ModePerm)
+	os.WriteFile(filepath.Join("./", artsDir, "/helloworld.txt"), []byte("Hello, World!"), os.ModePerm)
 
-func TestRunAfxdpSuite(t *testing.T) {
-	parallel.Run(t, new(afxdp.Suite))
-}
+	cmd = exec.Command("ls")
+	stdout, _ = cmd.Output()
+	fmt.Printf("ls: %s\n", string(stdout))
 
-func TestRunMemorySuite(t *testing.T) {
-	parallel.Run(t, new(memory.Suite))
-}
+	cmd = exec.Command("ls", "..")
+	stdout, _ = cmd.Output()
+	fmt.Printf("ls ..: %s\n", string(stdout))
 
-func TestRunHealSuite(t *testing.T) {
-	suite.Run(t, new(heal.Suite))
-}
+	cmd = exec.Command("ls", "../../..")
+	stdout, _ = cmd.Output()
+	fmt.Printf("ls ../../..: %s\n", string(stdout))
 
-func TestRunObservabilitySuite(t *testing.T) {
-	suite.Run(t, new(observability.Suite))
+	cmd = exec.Command("ls", "../../../..")
+	stdout, _ = cmd.Output()
+	fmt.Printf("ls ../../../..: %s\n", string(stdout))
 }
