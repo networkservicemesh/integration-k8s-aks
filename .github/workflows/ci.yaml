@@ -26,9 +26,6 @@ jobs:
     name: Azure Kubernetes Service
     runs-on: ubuntu-latest
     steps:
-      - name: Set up azure permissions
-        run: |
-          sudo chmod -R 777 ~/.azure
       - name: Set up /bin permissions
         run: |
           sudo chmod -R 777 /bin
