@@ -20,38 +20,35 @@ package main_test
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"testing"
+
+	"github.com/networkservicemesh/integration-tests/suites/memory"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestExample(t *testing.T) {
-	artsDir := os.Getenv("ARTIFACTS_DIR")
-	if artsDir == "" {
-		artsDir = "logs"
-	}
+type calicoFeatureSuite struct {
+	memory.Suite
+}
 
+func (s *calicoFeatureSuite) BeforeTest(suiteName, testName string) {
+	switch testName {
+	case
+		"TestKernel2kernel",
+		"TestKernel2ethernet2kernel":
+		s.T().Skip()
+	}
+}
+
+func TestRunMemorySuite(t *testing.T) {
 	cmd := exec.Command("pwd")
 	stdout, _ := cmd.Output()
 	fmt.Printf("pwd: %s\n", string(stdout))
-	fmt.Printf("log path: %s\n", filepath.Join("./", artsDir, "/helloworld.txt"))
-	os.WriteFile(filepath.Join("./", "artsDir", "/helloworld.txt"), []byte("Hello, World!"), os.ModePerm)
-	os.WriteFile(filepath.Join("./", artsDir, "/helloworld.txt"), []byte("Hello, World!"), os.ModePerm)
+
+	//os.Setenv("KUBECONFIG", "/home/nikita/.kube/config")
+	suite.Run(t, new(calicoFeatureSuite))
 
 	cmd = exec.Command("ls")
 	stdout, _ = cmd.Output()
 	fmt.Printf("ls: %s\n", string(stdout))
-
-	cmd = exec.Command("ls", "..")
-	stdout, _ = cmd.Output()
-	fmt.Printf("ls ..: %s\n", string(stdout))
-
-	cmd = exec.Command("ls", "../../..")
-	stdout, _ = cmd.Output()
-	fmt.Printf("ls ../../..: %s\n", string(stdout))
-
-	cmd = exec.Command("ls", "../../../..")
-	stdout, _ = cmd.Output()
-	fmt.Printf("ls ../../../..: %s\n", string(stdout))
 }

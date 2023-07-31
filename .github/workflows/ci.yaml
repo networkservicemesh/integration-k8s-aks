@@ -26,19 +26,68 @@ jobs:
     name: Azure Kubernetes Service
     runs-on: ubuntu-latest
     steps:
+      - name: Install azure-cli
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az version
+      - name: Set up azure permissions
+        run: |
+          sudo chmod -R 777 ~/.azure
       - name: Set up /bin permissions
         run: |
           sudo chmod -R 777 /bin
+      - name: Set up go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.20.5
       - name: Checkout files
         uses: actions/checkout@v2
         with:
           path: ${{ github.repository }}
+      - name: Setup AKS cluster
+        working-directory: ${{ github.repository }}
+        run: |
+          az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
+          az aks create \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_CLUSTER_NAME" \
+              --node-count 2 \
+              --node-vm-size Standard_B2s \
+              --generate-ssh-keys \
+              --debug
+          az aks wait  \
+            --name "$AZURE_CLUSTER_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --created > /dev/null
+          az aks get-credentials \
+              --name "$AZURE_CLUSTER_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --file "/tmp/config" \
+              --overwrite-existing
+        env:
+          AZURE_SERVICE_PRINCIPAL: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+          AZURE_SERVICE_PRINCIPAL_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
+          AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
+          AZURE_CLUSTER_NAME: aks-${{ github.run_id }}-${{ github.run_number }}
+          AZURE_RESOURCE_GROUP: nsm-ci
       - name: Run tests
         working-directory: ${{ github.repository }}
         run: |
           go test -count 1 -timeout 1h55m -race -v ./... -parallel 4
         env:
           KUBECONFIG: /tmp/config
+      - name: Cleanup AKS cluster
+        if: ${{ always() }}
+        working-directory: ${{ github.repository }}
+        run: |
+          az aks delete \
+              --name "$AZURE_CLUSTER_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --yes
+        env:
+          AZURE_CLUSTER_NAME: aks-${{ github.run_id }}-${{ github.run_number }}
+          AZURE_RESOURCE_GROUP: nsm-ci
       - name: Upload logs
         uses: actions/upload-artifact@v2
         if: ${{ always() }}
