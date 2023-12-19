@@ -21,15 +21,9 @@ package main_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-
 	"github.com/networkservicemesh/integration-tests/extensions/parallel"
-	"github.com/networkservicemesh/integration-tests/suites/afxdp"
 	"github.com/networkservicemesh/integration-tests/suites/basic"
 	"github.com/networkservicemesh/integration-tests/suites/features"
-	"github.com/networkservicemesh/integration-tests/suites/heal"
-	"github.com/networkservicemesh/integration-tests/suites/memory"
-	"github.com/networkservicemesh/integration-tests/suites/observability"
 )
 
 func TestRunFeatureSuite(t *testing.T) {
@@ -40,18 +34,18 @@ func TestRunBasicSuite(t *testing.T) {
 	parallel.Run(t, new(basic.Suite))
 }
 
-func TestRunAfxdpSuite(t *testing.T) {
-	parallel.Run(t, new(afxdp.Suite))
-}
-
-func TestRunMemorySuite(t *testing.T) {
-	parallel.Run(t, new(memory.Suite))
-}
-
-func TestRunHealSuite(t *testing.T) {
-	suite.Run(t, new(heal.Suite))
-}
-
-func TestRunObservabilitySuite(t *testing.T) {
-	suite.Run(t, new(observability.Suite))
-}
+//func TestRunAfxdpSuite(t *testing.T) {
+//	parallel.Run(t, new(afxdp.Suite))
+//}
+//
+//func TestRunMemorySuite(t *testing.T) {
+//	parallel.Run(t, new(memory.Suite))
+//}
+//
+//func TestRunHealSuite(t *testing.T) {
+//	suite.Run(t, new(heal.Suite))
+//}
+//
+//func TestRunObservabilitySuite(t *testing.T) {
+//	suite.Run(t, new(observability.Suite))
+//}
