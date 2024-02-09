@@ -53,7 +53,7 @@ jobs:
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --name "$AZURE_CLUSTER_NAME" \
               --node-count 2 \
-              --node-vm-size Standard_B2s \
+              --node-vm-size Standard_B2ms \
               --generate-ssh-keys \
               --debug
           az aks wait  \
