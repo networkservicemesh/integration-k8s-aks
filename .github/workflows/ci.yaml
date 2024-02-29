@@ -51,6 +51,9 @@ jobs:
           AZURE_K8S_VERSION=$(echo $AZURE_K8S_VERSION | cut -c 2-)
 
           az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
+          
+          az aks get-versions
+          
           az aks create \
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --name "$AZURE_CLUSTER_NAME" \
