@@ -48,6 +48,8 @@ jobs:
       - name: Setup AKS cluster
         working-directory: ${{ github.repository }}
         run: |
+          AZURE_K8S_VERSION=$(echo $AZURE_K8S_VERSION | cut -c 2-)
+
           az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
           az aks create \
               --resource-group "$AZURE_RESOURCE_GROUP" \
@@ -55,6 +57,7 @@ jobs:
               --node-count 2 \
               --node-vm-size Standard_B2ms \
               --generate-ssh-keys \
+              --kubernetes-version $AZURE_K8S_VERSION \
               --debug
           az aks wait  \
             --name "$AZURE_CLUSTER_NAME" \
@@ -69,11 +72,13 @@ jobs:
           AZURE_SERVICE_PRINCIPAL: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
           AZURE_SERVICE_PRINCIPAL_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
           AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
+          AZURE_K8S_VERSION: "v1.22.17"
           AZURE_CLUSTER_NAME: aks-${{ github.run_id }}-${{ github.run_number }}
           AZURE_RESOURCE_GROUP: nsm-ci
       - name: Run tests
         working-directory: ${{ github.repository }}
         run: |
+          kubectl version
           go test -count 1 -timeout 1h55m -race -v ./... -parallel 4
         env:
           KUBECONFIG: /tmp/config
