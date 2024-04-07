@@ -1,0 +1,152 @@
+#! ---------------------------------------------------------------------
+#! Basic cluster creation configuration
+#! ---------------------------------------------------------------------
+CLUSTER_NAME: nsm-tanzu-mg
+CLUSTER_PLAN: dev
+INFRASTRUCTURE_PROVIDER: azure
+# CLUSTER_API_SERVER_PORT:
+ENABLE_CEIP_PARTICIPATION: false
+# ENABLE_AUDIT_LOGGING: true
+CLUSTER_CIDR: 100.96.0.0/11
+SERVICE_CIDR: 100.64.0.0/13
+# CAPBK_BOOTSTRAP_TOKEN_TTL: 30m
+
+#! ---------------------------------------------------------------------
+#! Node configuration
+#! ---------------------------------------------------------------------
+
+# SIZE:
+# CONTROLPLANE_SIZE:
+# WORKER_SIZE:
+AZURE_CONTROL_PLANE_MACHINE_TYPE: "Standard_B2s"
+AZURE_NODE_MACHINE_TYPE: "Standard_B2ms"
+# OS_NAME: ""
+# OS_VERSION: ""
+# OS_ARCH: ""
+# AZURE_CONTROL_PLANE_DATA_DISK_SIZE_GIB : ""
+# AZURE_CONTROL_PLANE_OS_DISK_SIZE_GIB : ""
+# AZURE_CONTROL_PLANE_MACHINE_TYPE : ""
+# AZURE_CONTROL_PLANE_OS_DISK_STORAGE_ACCOUNT_TYPE : ""
+# AZURE_ENABLE_NODE_DATA_DISK : ""
+# AZURE_NODE_DATA_DISK_SIZE_GIB : ""
+# AZURE_NODE_OS_DISK_SIZE_GIB : ""
+# AZURE_NODE_MACHINE_TYPE : ""
+# AZURE_NODE_OS_DISK_STORAGE_ACCOUNT_TYPE : ""
+
+#! ---------------------------------------------------------------------
+#! Azure configuration
+#! ---------------------------------------------------------------------
+
+AZURE_ENVIRONMENT: "AzurePublicCloud"
+AZURE_TENANT_ID: ${AZURE_TENANT}
+AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
+AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
+AZURE_SUBSCRIPTION_ID: ${AZURE_SUBSCRIPTION_ID}
+AZURE_SSH_PUBLIC_KEY_B64: ${AZURE_SSH_PUBLIC_KEY_B64}
+AZURE_LOCATION: "eastus"
+AZURE_RESOURCE_GROUP: ${AZURE_RESOURCE_GROUP}
+
+# AZURE_VNET_RESOURCE_GROUP: ""
+# AZURE_VNET_NAME: ""
+# AZURE_VNET_CIDR: ""
+# AZURE_CONTROL_PLANE_SUBNET_NAME: ""
+# AZURE_CONTROL_PLANE_SUBNET_CIDR: ""
+# AZURE_NODE_SUBNET_NAME: ""
+# AZURE_NODE_SUBNET_CIDR: ""
+# AZURE_CUSTOM_TAGS : ""
+# AZURE_ENABLE_PRIVATE_CLUSTER : ""
+# AZURE_FRONTEND_PRIVATE_IP : ""
+# AZURE_ENABLE_ACCELERATED_NETWORKING : ""
+
+#! ---------------------------------------------------------------------
+#! Image repository configuration
+#! ---------------------------------------------------------------------
+
+# TKG_CUSTOM_IMAGE_REPOSITORY: ""
+# TKG_CUSTOM_IMAGE_REPOSITORY_CA_CERTIFICATE: ""
+
+#! ---------------------------------------------------------------------
+#! Proxy configuration
+#! ---------------------------------------------------------------------
+
+# TKG_HTTP_PROXY: ""
+# TKG_HTTPS_PROXY: ""
+# TKG_NO_PROXY: ""
+
+#! ---------------------------------------------------------------------
+#! Machine Health Check configuration
+#! ---------------------------------------------------------------------
+
+ENABLE_MHC:
+ENABLE_MHC_CONTROL_PLANE: true
+ENABLE_MHC_WORKER_NODE: true
+MHC_UNKNOWN_STATUS_TIMEOUT: 5m
+MHC_FALSE_STATUS_TIMEOUT: 12m
+
+#! ---------------------------------------------------------------------
+#! Identity management configuration
+#! ---------------------------------------------------------------------
+
+IDENTITY_MANAGEMENT_TYPE: none
+
+#! Settings for IDENTITY_MANAGEMENT_TYPE: "oidc"
+# CERT_DURATION: 2160h
+# CERT_RENEW_BEFORE: 360h
+# OIDC_IDENTITY_PROVIDER_CLIENT_ID:
+# OIDC_IDENTITY_PROVIDER_CLIENT_SECRET:
+# OIDC_IDENTITY_PROVIDER_GROUPS_CLAIM: groups
+# OIDC_IDENTITY_PROVIDER_ISSUER_URL:
+# OIDC_IDENTITY_PROVIDER_SCOPES: "email,profile,groups,offline_access"
+# OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: email
+
+#! The following two variables are used to configure Pinniped JWTAuthenticator for workload clusters
+# SUPERVISOR_ISSUER_URL:
+# SUPERVISOR_ISSUER_CA_BUNDLE_DATA:
+
+#! Settings for IDENTITY_MANAGEMENT_TYPE: "ldap"
+# LDAP_BIND_DN:
+# LDAP_BIND_PASSWORD:
+# LDAP_HOST:
+# LDAP_USER_SEARCH_BASE_DN:
+# LDAP_USER_SEARCH_FILTER:
+# LDAP_USER_SEARCH_ID_ATTRIBUTE: dn
+# LDAP_USER_SEARCH_NAME_ATTRIBUTE:
+# LDAP_GROUP_SEARCH_BASE_DN:
+# LDAP_GROUP_SEARCH_FILTER:
+# LDAP_GROUP_SEARCH_NAME_ATTRIBUTE: dn
+# LDAP_GROUP_SEARCH_USER_ATTRIBUTE: dn
+# LDAP_ROOT_CA_DATA_B64:
+
+#! ---------------------------------------------------------------------
+#! Antrea CNI configuration
+#! ---------------------------------------------------------------------
+
+# ANTREA_NO_SNAT: true
+# ANTREA_NODEPORTLOCAL: true
+# ANTREA_NODEPORTLOCAL_ENABLED: true
+# ANTREA_NODEPORTLOCAL_PORTRANGE: 61000-62000
+# ANTREA_TRAFFIC_ENCAP_MODE: "encap"
+# ANTREA_PROXY: true
+# ANTREA_PROXY_ALL: false
+# ANTREA_PROXY_LOAD_BALANCER_IPS: false
+# ANTREA_PROXY_NODEPORT_ADDRS:
+# ANTREA_PROXY_SKIP_SERVICES: ""
+# ANTREA_POLICY: true
+# ANTREA_TRACEFLOW: true
+# ANTREA_DISABLE_UDP_TUNNEL_OFFLOAD: false
+# ANTREA_ENABLE_USAGE_REPORTING: false
+# ANTREA_EGRESS: true
+# ANTREA_EGRESS_EXCEPT_CIDRS: ""
+# ANTREA_FLOWEXPORTER: false
+# ANTREA_FLOWEXPORTER_COLLECTOR_ADDRESS: "flow-aggregator.flow-aggregator.svc:4739:tls"
+# ANTREA_FLOWEXPORTER_POLL_INTERVAL: "5s"
+# ANTREA_FLOWEXPORTER_ACTIVE_TIMEOUT: "5s"
+# ANTREA_FLOWEXPORTER_IDLE_TIMEOUT: "15s"
+# ANTREA_IPAM: false
+# ANTREA_KUBE_APISERVER_OVERRIDE: ""
+# ANTREA_MULTICAST: false
+# ANTREA_MULTICAST_INTERFACES: ""
+# ANTREA_NETWORKPOLICY_STATS: true
+# ANTREA_SERVICE_EXTERNALIP: true
+# ANTREA_TRANSPORT_INTERFACE: ""
+# ANTREA_TRANSPORT_INTERFACE_CIDRS: ""
