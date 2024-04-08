@@ -118,11 +118,6 @@ jobs:
           image: kindest/node:v1.28.0
           skipClusterCreation: true
 
-      - name: Check kind
-        run: |
-          kubectl version
-          kubectl get pods -n kube-system
-
       - name: Install clusterctl
         run: |
           curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.6.2/clusterctl-linux-amd64 -o clusterctl
