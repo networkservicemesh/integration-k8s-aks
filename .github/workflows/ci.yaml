@@ -100,13 +100,13 @@ jobs:
     # environment: Azure Tanzu
     name: Azure Tanzu
     runs-on: ubuntu-latest
-    env: 
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
-      AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_SSH_PUBLIC_KEY_B64: ${{ secrets.AZURE_SSH_PUBLIC_KEY_B64}}
-      AZURE_RESOURCE_GROUP: nsm-ci
+    # env: 
+    #   AZURE_CLIENT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+    #   AZURE_CLIENT_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
+    #   AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
+    #   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    #   AZURE_SSH_PUBLIC_KEY_B64: ${{ secrets.AZURE_SSH_PUBLIC_KEY_B64}}
+    #   AZURE_RESOURCE_GROUP: nsm-ci
     steps:
       - name: Checkout files
         uses: actions/checkout@v4
