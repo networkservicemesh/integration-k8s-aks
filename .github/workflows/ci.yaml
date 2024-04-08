@@ -97,7 +97,7 @@ jobs:
 
   azure-tanzu:
     # needs: azure
-    environment: Azure Tanzu
+    # environment: Azure Tanzu
     name: Azure Tanzu
     runs-on: ubuntu-latest
     env: 
