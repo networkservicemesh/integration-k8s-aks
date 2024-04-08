@@ -160,8 +160,15 @@ jobs:
           tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
-          tanzu plugin repo add -b tanzu-cli-admin-plugins -n admin
-          tanzu plugin sync
+          tanzu init
+          curl -Lo plugins.tar.gz https://github.com/vmware-tanzu/tanzu-framework/releases/download/${TANZU_VERSION}/tanzu-framework-plugins-context-linux-amd64.tar.gz
+          tar -xzf plugins.tar.gz -C ${TANZU_HOME}
+          curl -Lo plugins.tar.gz https://github.com/vmware-tanzu/tanzu-framework/releases/download/${TANZU_VERSION}/tanzu-framework-plugins-standalone-linux-amd64.tar.gz
+          tar -xzf plugins.tar.gz -C ${TANZU_HOME}
+          tanzu plugin install cluster --local ${TANZU_HOME}/context-plugins
+          tanzu plugin install kubernetes-release --local ${TANZU_HOME}/context-plugins
+          tanzu plugin install management-cluster --local ${TANZU_HOME}/standalone-plugins
+          tanzu plugin install pinniped-auth --local ${TANZU_HOME}/standalone-plugins
       - name: Setup AKS management cluster
         working-directory: ${{ github.repository }}
         run: |
