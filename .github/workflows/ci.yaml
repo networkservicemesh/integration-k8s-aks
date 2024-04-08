@@ -114,7 +114,7 @@ jobs:
       - name: Install kind
         uses: engineerd/setup-kind@v0.5.0
         with:
-          config: ${{ github.repository }}/kind-cluster-config.yaml
+          config: kind-cluster-config.yaml
           version: v0.20.0
           image: kindest/node:v1.28.0
 
