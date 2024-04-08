@@ -110,8 +110,6 @@ jobs:
     steps:
       - name: Checkout files
         uses: actions/checkout@v4
-        with:
-          path: ${{ github.repository }}
 
       # - name: Install kind
       #   uses: engineerd/setup-kind@v0.5.0
@@ -158,39 +156,38 @@ jobs:
           curl -Lo tanzu-framework.tar.gz https://github.com/vmware-tanzu/tanzu-framework/releases/download/v0.25.4/tanzu-framework-linux-amd64.tar.gz
           mkdir $TANZU_HOME
           tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
-          sudo mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
+          mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
           tanzu init
-          tanzu plugin list
-      - name: Setup AKS management cluster
-        working-directory: ${{ github.repository }}
-        run: |
-          ls
-          
-          tanzu management-cluster create -f management-cluster.yaml --dry-run --force-config-update --yes
-      #     kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
 
-      # - name: Setup AKS worker cluster
-      #   working-directory: ${{ github.repository }}
-      #   run: |
-      #     envsubst < worker-cluster.yaml  > worker-cluster.yaml
-      #     tanzu cluster create --file worker-cluster.yaml
-      #     tanzu cluster kubeconfig get nsm-tanzu-worker --admin
-      #     kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
+      - uses: danielr1996/envsubst-action@1.0.0
+        with:
+          input: management-cluster.yaml
+          output: management-cluster.yaml
+
+      - name: Setup AKS management cluster
+        run: |
+          cat management-cluster.yaml
+          tanzu management-cluster create -f management-cluster.yaml --yes 
+          kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
+
+      - name: Setup AKS worker cluster
+        run: |
+          envsubst < worker-cluster.yaml > worker-cluster.yaml
+          tanzu cluster create --file worker-cluster.yaml
+          tanzu cluster kubeconfig get nsm-tanzu-worker --admin
+          kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
       # - name: Run integration tests
-      #   working-directory: ${{ github.repository }}
       #   run: |
       #      go test -run TestRunMemorySuite -count 1 -timeout 1h -race -v -parallel 4 -gotestmd.t 10m
 
       # - name: Delete NSM tanzu workload cluster
       #   if: ${{ always() }}
-      #   working-directory: ${{ github.repository }}
       #   run: |
       #     tanzu cluster delete nsm-tanzu-worker
 
       # - name: Delete NSM tanzu management cluster
       #   if: ${{ always() }}
-      #   working-directory: ${{ github.repository }}
       #   run: |
       #     tanzu management-cluster delete nsm-tanzu-mg
 
