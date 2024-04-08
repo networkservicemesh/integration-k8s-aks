@@ -3,7 +3,7 @@
 #! ---------------------------------------------------------------------
 CLUSTER_NAME: nsm-tanzu-mg
 CLUSTER_PLAN: dev
-INFRASTRUCTURE_PROVIDER: vsphere
+INFRASTRUCTURE_PROVIDER: azure
 # CLUSTER_API_SERVER_PORT:
 ENABLE_CEIP_PARTICIPATION: false
 # ENABLE_AUDIT_LOGGING: true
