@@ -166,9 +166,8 @@ jobs:
         working-directory: ${{ github.repository }}
         run: |
           ls
-          envsubst < management-cluster.yaml  > management-cluster.yaml
-          cat $(realpath management-cluster.yaml)
-          tanzu management-cluster create -f $(realpath management-cluster.yaml) --dry-run --force-config-update --yes
+          
+          tanzu management-cluster create -f management-cluster.yaml --dry-run --force-config-update --yes
       #     kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
 
       # - name: Setup AKS worker cluster
