@@ -162,7 +162,7 @@ jobs:
 
       - name: Setup envs (CI ONLY)
         run: |
-          tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT_ID}
+          tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
           tanzu config set env.AZURE_CLIENT_ID ${AZURE_CLIENT_ID}
           tanzu config set env.AZURE_SUBSCRIPTION_ID ${AZURE_SUBSCRIPTION_ID}
           tanzu config set env.AZURE_SSH_PUBLIC_KEY_B64 ${AZURE_SSH_PUBLIC_KEY_B64}
