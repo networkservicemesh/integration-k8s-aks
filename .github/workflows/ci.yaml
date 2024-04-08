@@ -159,7 +159,8 @@ jobs:
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
           tanzu init
-
+          cat management-cluster.yaml
+          ls
       - uses: danielr1996/envsubst-action@1.0.0
         with:
           input: management-cluster.yaml
