@@ -114,9 +114,9 @@ jobs:
       - name: Install kind
         uses: engineerd/setup-kind@v0.5.0
         with:
-          config: kind-cluster-config.yaml
           version: v0.20.0
           image: kindest/node:v1.28.0
+          skipClusterCreation: true
 
       - name: Check kind
         run: |
@@ -185,12 +185,12 @@ jobs:
       - name: Delete NSM tanzu workload cluster
         if: ${{ always() }}
         run: |
-          tanzu cluster delete nsm-tanzu-worker
+          tanzu cluster delete nsm-tanzu-worker --yes
 
       - name: Delete NSM tanzu management cluster
         if: ${{ always() }}
         run: |
-          tanzu management-cluster delete nsm-tanzu-mg
+          tanzu management-cluster delete nsm-tanzu-mg --yes
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
