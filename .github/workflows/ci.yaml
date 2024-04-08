@@ -169,6 +169,7 @@ jobs:
       - name: Setup AKS management cluster
         run: |
           cat management-cluster.yaml
+          cat worker-cluster.yaml
           tanzu management-cluster create -f management-cluster.yaml --yes 
           kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
 
