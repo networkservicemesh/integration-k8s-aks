@@ -154,12 +154,10 @@ jobs:
           tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
+          cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
           tanzu init
           tanzu config get
-          cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
-          tanzu plugin sync || true
-          cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
-          tanzu config get
+          TKG_CUSTOM_IMAGE_REPOSITORY="projects.registry.vmware.com/tkg" tanzu plugin sync || true
       - name: Setup envs (CI ONLY)
         run: |
           tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
