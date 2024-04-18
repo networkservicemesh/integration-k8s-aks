@@ -119,23 +119,6 @@ jobs:
           image: kindest/node:v1.28.0
           skipClusterCreation: true
 
-      - name: Install clusterctl
-        run: |
-          curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.6.2/clusterctl-linux-amd64 -o clusterctl
-          chmod +x ./clusterctl
-          mv ./clusterctl /usr/local/bin/clusterctl
-          clusterctl version
-
-      - name: Install azure-cli
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az version
-
-      - name: Set up azure permissions
-        run: |
-          sudo chmod -R 777 ~/.azure
-
       - name: Set up /bin permissions
         run: |
           sudo chmod -R 777 /bin
@@ -154,7 +137,7 @@ jobs:
           tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
-          mkdir -p .config/tanzu
+          mkdir -p $HOME/.config/tanzu
           cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
           tanzu init
           tanzu config get
