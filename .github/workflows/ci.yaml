@@ -96,8 +96,8 @@ jobs:
   #         path: ${{ github.repository }}/logs
 
   azure-tanzu:
-    needs: azure
-    environment: Azure Tanzu
+    # needs: azure
+    # environment: Azure Tanzu
     name: Azure Tanzu
     runs-on: ubuntu-latest
     env:
