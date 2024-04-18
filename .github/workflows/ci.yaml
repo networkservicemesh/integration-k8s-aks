@@ -130,20 +130,17 @@ jobs:
 
       - name: Install Tanzu
         run: |
-          TANZU_VERSION=v0.25.4
-          TANZU_HOME=$HOME/tanzu
-          curl -Lo tanzu-framework.tar.gz https://github.com/vmware-tanzu/tanzu-framework/releases/download/v0.25.4/tanzu-framework-linux-amd64.tar.gz
-          mkdir $TANZU_HOME
-          tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
-          mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
-          chmod +x /usr/local/bin/tanzu
-          mkdir -p $HOME/.config/tanzu
-          tanzu init
-          tanzu plugin sync
-          cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
-          tanzu init
-          tanzu plugin sync || true
-          tanzu config get
+          sudo apt update
+          sudo apt install -y ca-certificates curl gpg
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub | sudo gpg --dearmor -o /etc/apt/keyrings/tanzu-archive-keyring.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/tanzu-archive-keyring.gpg] https://storage.googleapis.com/tanzu-cli-os-packages/apt tanzu-cli-jessie main" | sudo tee /etc/apt/sources.list.d/tanzu.list
+          sudo apt update
+          sudo apt install tanzu-cli
+          tanzu config eula accept
+          tanzu ceip-participation set false
+          tanzu plugin install all --group vmware-tanzucli/essentials
+          tanzu plugin install --group vmware-tkg/default:v2.1.0
       - name: Setup envs (CI ONLY)
         run: |
           tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
