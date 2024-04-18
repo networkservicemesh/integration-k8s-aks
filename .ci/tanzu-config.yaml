@@ -1,3 +1,4 @@
+---
 apiVersion: config.tanzu.vmware.com/v1alpha1
 clientOptions:
   cli:
