@@ -155,10 +155,11 @@ jobs:
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
           tanzu init
-          cat  $HOME/.config/tanzu/config.yaml
+          tanzu config get
           cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
           tanzu plugin sync || true
-          cat  $HOME/.config/tanzu/config.yaml
+          cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
+          tanzu config get
       - name: Setup envs (CI ONLY)
         run: |
           tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
@@ -170,7 +171,7 @@ jobs:
 
       - name: Setup AKS management cluster
         run: |
-          tanzu management-cluster create -f management-cluster.yaml --timeout 30m --yes 
+          tanzu management-cluster create -f management-cluster.yaml --timeout 30m --yes
           kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
 
       - name: Setup AKS worker cluster
