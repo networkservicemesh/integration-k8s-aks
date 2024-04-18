@@ -154,7 +154,7 @@ jobs:
           tar -xzf tanzu-framework.tar.gz -C ${TANZU_HOME}
           mv ${TANZU_HOME}/cli/core/${TANZU_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu
           chmod +x /usr/local/bin/tanzu
-          mkdir .config/tanzu
+          mkdir -p .config/tanzu
           cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
           tanzu init
           tanzu config get
