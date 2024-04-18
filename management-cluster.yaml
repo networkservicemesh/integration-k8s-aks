@@ -2,14 +2,19 @@
 #! Basic cluster creation configuration
 #! ---------------------------------------------------------------------
 CLUSTER_NAME: nsm-tanzu-mg
+
 CLUSTER_PLAN: dev
 INFRASTRUCTURE_PROVIDER: azure
+NAMESPACE: default
 # CLUSTER_API_SERVER_PORT:
 ENABLE_CEIP_PARTICIPATION: false
 # ENABLE_AUDIT_LOGGING: true
-CLUSTER_CIDR: 100.96.0.0/11
-SERVICE_CIDR: 100.64.0.0/13
+# CLUSTER_CIDR: 100.96.0.0/11
+# SERVICE_CIDR: 100.64.0.0/13
 # CAPBK_BOOTSTRAP_TOKEN_TTL: 30m
+OS_ARCH: amd64
+OS_NAME: ubuntu
+OS_VERSION: "20.04"
 
 #! ---------------------------------------------------------------------
 #! Node configuration
@@ -18,8 +23,9 @@ SERVICE_CIDR: 100.64.0.0/13
 # SIZE:
 # CONTROLPLANE_SIZE:
 # WORKER_SIZE:
-AZURE_CONTROL_PLANE_MACHINE_TYPE: "Standard_B2s"
-AZURE_NODE_MACHINE_TYPE: "Standard_B2ms"
+
+CONTROL_PLANE_MACHINE_COUNT: 1
+WORKER_MACHINE_COUNT: 1
 # OS_NAME: ""
 # OS_VERSION: ""
 # OS_ARCH: ""
@@ -36,17 +42,20 @@ AZURE_NODE_MACHINE_TYPE: "Standard_B2ms"
 #! ---------------------------------------------------------------------
 #! Azure configuration
 #! ---------------------------------------------------------------------
-
+# AZURE_CONTROL_PLANE_MACHINE_TYPE: "Standard_D2as_v5"
+# AZURE_NODE_MACHINE_TYPE: "Standard_D4as_v5"
 AZURE_ENVIRONMENT: "AzurePublicCloud"
-AZURE_TENANT_ID: ${AZURE_TENANT}
-AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
-AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
-AZURE_SUBSCRIPTION_ID: ${AZURE_SUBSCRIPTION_ID}
-AZURE_SSH_PUBLIC_KEY_B64: ${AZURE_SSH_PUBLIC_KEY_B64}
-AZURE_LOCATION: "eastus"
-AZURE_RESOURCE_GROUP: ${AZURE_RESOURCE_GROUP}
+# AZURE_TENANT_ID:
+# AZURE_CLIENT_ID:
+# AZURE_CLIENT_SECRET:
+# AZURE_SUBSCRIPTION_ID:
+# AZURE_SSH_PUBLIC_KEY_B64:
+# AZURE_RESOURCE_GROUP:
 
-# AZURE_VNET_RESOURCE_GROUP: ""
+AZURE_LOCATION: "eastus"
+
+# AZURE_VNET_RESOURCE_GROUP: "nsm-ci"
+ 
 # AZURE_VNET_NAME: ""
 # AZURE_VNET_CIDR: ""
 # AZURE_CONTROL_PLANE_SUBNET_NAME: ""
@@ -80,8 +89,8 @@ AZURE_RESOURCE_GROUP: ${AZURE_RESOURCE_GROUP}
 ENABLE_MHC:
 ENABLE_MHC_CONTROL_PLANE: true
 ENABLE_MHC_WORKER_NODE: true
-MHC_UNKNOWN_STATUS_TIMEOUT: 5m
-MHC_FALSE_STATUS_TIMEOUT: 12m
+MHC_UNKNOWN_STATUS_TIMEOUT: 15m
+MHC_FALSE_STATUS_TIMEOUT: 30m
 
 #! ---------------------------------------------------------------------
 #! Identity management configuration
