@@ -1,7 +1,7 @@
 #! ---------------------------------------------------------------------
 #! Cluster creation basic configuration
 #! ---------------------------------------------------------------------
-
+---
 CLUSTER_NAME: nsm-tanzu-worker
 CLUSTER_PLAN: dev
 NAMESPACE: default

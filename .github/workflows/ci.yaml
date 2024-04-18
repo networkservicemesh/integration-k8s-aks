@@ -159,44 +159,47 @@ jobs:
           cp ./.ci/tanzu-config.yaml $HOME/.config/tanzu/config.yaml
           tanzu plugin sync || true
           cat  $HOME/.config/tanzu/config.yaml
-      # - name: Setup envs (CI ONLY)
-      #   run: |
-      #     tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
-      #     tanzu config set env.AZURE_CLIENT_ID ${AZURE_CLIENT_ID}
-      #     tanzu config set env.AZURE_SUBSCRIPTION_ID ${AZURE_SUBSCRIPTION_ID}
-      #     tanzu config set env.AZURE_SSH_PUBLIC_KEY_B64 ${AZURE_SSH_PUBLIC_KEY_B64}
-      #     tanzu config set env.AZURE_RESOURCE_GROUP ${AZURE_RESOURCE_GROUP}
-      #     tanzu config set env.AZURE_CLIENT_SECRET ${AZURE_CLIENT_SECRET}
+      - name: Setup envs (CI ONLY)
+        run: |
+          tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
+          tanzu config set env.AZURE_CLIENT_ID ${AZURE_CLIENT_ID}
+          tanzu config set env.AZURE_SUBSCRIPTION_ID ${AZURE_SUBSCRIPTION_ID}
+          tanzu config set env.AZURE_SSH_PUBLIC_KEY_B64 ${AZURE_SSH_PUBLIC_KEY_B64}
+          tanzu config set env.AZURE_RESOURCE_GROUP ${AZURE_RESOURCE_GROUP}
+          tanzu config set env.AZURE_CLIENT_SECRET ${AZURE_CLIENT_SECRET}
 
-      # - name: Setup AKS management cluster
-      #   run: |
-      #     tanzu management-cluster create -f management-cluster.yaml --yes --timeout 30m
-      #     kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
+      - name: Setup AKS management cluster
+        run: |
+          tanzu management-cluster create -f management-cluster.yaml --timeout 30m --yes 
+          kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
 
-      # - name: Setup AKS worker cluster
-      #   run: |
-      #     tanzu cluster create --file worker-cluster.yaml --yes
-      #     tanzu cluster kubeconfig get nsm-tanzu-worker --admin
-      #     kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
-      # - name: Run integration tests
-      #   run: |
-      #      go test -run TestRunBasicSuite -count 1 -timeout 30m -race -v -parallel 4
+      - name: Setup AKS worker cluster
+        run: |
+          tanzu cluster create --file worker-cluster.yaml --timeout 30m --yes
+          tanzu cluster kubeconfig get nsm-tanzu-worker --admin
+          kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
+      - name: Run integration tests
+        run: |
+           go test -run TestRunBasicSuite -count 1 -timeout 30m -race -v -parallel 4
 
-      # - name: Delete NSM tanzu workload cluster
-      #   if: ${{ always() }}
-      #   run: |
-      #     tanzu cluster delete nsm-tanzu-worker --yes
-      #     kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
-      #     kubectl wait --for=delete clusters/nsm-tanzu-worker --timeout=5m
+      - name: Delete NSM tanzu workload cluster
+        if: ${{ always() }}
+        run: |
+          tanzu cluster delete nsm-tanzu-worker --yes
+          kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
+          kubectl wait --for=delete clusters/nsm-tanzu-worker --timeout=5m
 
-      # - name: Delete NSM tanzu management cluster
-      #   if: ${{ always() }}
-      #   run: |
-      #     tanzu management-cluster delete --yes
+      - name: Delete NSM tanzu management cluster
+        if: ${{ always() }}
+        run: |
+          kind get kubeconfig --name $(kind get clusters) > kindconfig
+          export KUBECONFIG=kindconfig
+          kubectl describe machines -A
+          tanzu management-cluster delete --yes
 
-      # - name: Upload logs
-      #   uses: actions/upload-artifact@v4
-      #   if: ${{ always() }}
-      #   with:
-      #     name: tanzu-logs-${{ github.run_number }}
-      #     path: ${{ github.repository }}/logs
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: tanzu-logs-${{ github.run_number }}
+          path: ${{ github.repository }}/logs
