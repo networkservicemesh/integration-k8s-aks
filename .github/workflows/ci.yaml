@@ -119,10 +119,6 @@ jobs:
           image: kindest/node:v1.28.0
           skipClusterCreation: true
 
-      - name: Set up /bin permissions
-        run: |
-          sudo chmod -R 777 /bin
-          sudo test
 
       - name: Install Tanzu
         run: |
