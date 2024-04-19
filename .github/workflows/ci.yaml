@@ -149,7 +149,7 @@ jobs:
       - name: Setup AKS worker cluster
         run: |
           tanzu cluster create --file worker-cluster.yaml --timeout 30m --yes || true
-          SKIP_MULTI_AZ_VERIFY=true tanzu cluster create --file /home/user/.config/tanzu/tkg/clusterconfigs/nsm-tanzu-worker.yaml --timeout 30m
+          SKIP_MULTI_AZ_VERIFY=true tanzu cluster create --file $HOME/.config/tanzu/tkg/clusterconfigs/nsm-tanzu-worker.yaml --timeout 30m
           tanzu cluster kubeconfig get nsm-tanzu-worker --admin
           kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
 
