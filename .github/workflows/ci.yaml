@@ -94,3 +94,87 @@ jobs:
         with:
           name: logs-${{ github.run_number }}
           path: ${{ github.repository }}/logs
+
+  azure-tanzu:
+    needs: azure
+    environment: Azure Tanzu
+    name: Azure Tanzu
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
+      AZURE_TENANT: ${{ secrets.AZURE_TENANT }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_SSH_PUBLIC_KEY_B64: ${{ secrets.AZURE_SSH_PUBLIC_KEY_B64}}
+      AZURE_RESOURCE_GROUP: nsm-ci
+
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v4
+
+      - name: Install kind
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: v0.20.0
+          image: kindest/node:v1.27.0
+          skipClusterCreation: true
+
+
+      - name: Install Tanzu
+        run: |
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub | sudo gpg --dearmor -o /etc/apt/keyrings/tanzu-archive-keyring.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/tanzu-archive-keyring.gpg] https://storage.googleapis.com/tanzu-cli-os-packages/apt tanzu-cli-jessie main" | sudo tee /etc/apt/sources.list.d/tanzu.list
+          sudo apt update
+          sudo apt install tanzu-cli=1.1.0
+          tanzu version
+          tanzu config eula accept
+          tanzu ceip-participation set false
+          tanzu plugin install all --group vmware-tanzucli/essentials:v1.0.0
+          tanzu plugin install --group vmware-tkg/default:v2.3.0
+      - name: Setup envs (CI ONLY)
+        run: |
+          tanzu config set env.AZURE_TENANT_ID ${AZURE_TENANT}
+          tanzu config set env.AZURE_CLIENT_ID ${AZURE_CLIENT_ID}
+          tanzu config set env.AZURE_SUBSCRIPTION_ID ${AZURE_SUBSCRIPTION_ID}
+          tanzu config set env.AZURE_SSH_PUBLIC_KEY_B64 ${AZURE_SSH_PUBLIC_KEY_B64}
+          tanzu config set env.AZURE_RESOURCE_GROUP ${AZURE_RESOURCE_GROUP}
+          tanzu config set env.AZURE_CLIENT_SECRET ${AZURE_CLIENT_SECRET}
+
+      - name: Setup AKS management cluster
+        run: |
+          tanzu management-cluster create -f management-cluster.yaml --timeout 30m --yes
+          kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
+
+      - name: Setup AKS worker cluster
+        run: |
+          tanzu cluster create --file worker-cluster.yaml --timeout 30m --yes || true
+          SKIP_MULTI_AZ_VERIFY=true tanzu cluster create --file $HOME/.config/tanzu/tkg/clusterconfigs/nsm-tanzu-worker.yaml --timeout 30m
+          tanzu cluster kubeconfig get nsm-tanzu-worker --admin
+          kubectl config use-context nsm-tanzu-worker-admin@nsm-tanzu-worker
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.20.5
+
+      - name: Run integration tests
+        run: |
+           go test -run TestRunBasicSuite -count 1 -timeout 30m -race -v -parallel 4
+
+      - name: Delete NSM tanzu workload cluster
+        if: ${{ always() }}
+        run: |
+          tanzu cluster delete nsm-tanzu-worker --yes
+          kubectl config use-context nsm-tanzu-mg-admin@nsm-tanzu-mg
+          kubectl wait --for=delete clusters/nsm-tanzu-worker --timeout=20m
+      - name: Delete NSM tanzu management cluster
+        if: ${{ always() }}
+        run: |
+          tanzu management-cluster delete --yes
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: tanzu-logs-${{ github.run_number }}
+          path: logs
