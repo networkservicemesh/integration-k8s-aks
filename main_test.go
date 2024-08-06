@@ -42,7 +42,11 @@ func TestRunFeatureSuite(t *testing.T) {
 			featuresSuite.TestNse_composition,
 			featuresSuite.TestSelect_forwarder,
 			featuresSuite.TestVl3_dns,
-			featuresSuite.TestVl3_scale_from_zero))
+			featuresSuite.TestVl3_scale_from_zero,
+			featuresSuite.TestVl3_ipv6,
+			featuresSuite.TestVl3_dual_stack,
+			featuresSuite.TestVl3_lb,
+			featuresSuite.TestScaled_registry))
 }
 
 func TestRunBasicSuite(t *testing.T) {
