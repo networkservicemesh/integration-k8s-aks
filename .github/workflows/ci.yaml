@@ -52,10 +52,14 @@ jobs:
           
           K8S_VERSION=$(echo ${{ vars.NSM_KUBERNETES_VERSION }} | cut -d '.' -f 1,2 | cut -c 2-)
           K8S_VERSION=1.28
-          AKS_K8S_VERSION=$(az aks get-versions --location westus | jq '.orchestrators[].orchestratorVersion' | grep -m 1 "${K8S_VERSION}")
+
+          AKS_K8S_VERSION=$(az aks get-versions --location westus | jq '.values[].version' | grep -m 1 "${K8S_VERSION}")
+
+          # az aks get-versions --location westus --output table | grep -m 1 "1.28" | cut -d' ' -f1
 
           echo $K8S_VERSION
           echo $AKS_K8S_VERSION
+          echo "Creating a cluster"
 
           az aks create \
               --resource-group "$AZURE_RESOURCE_GROUP" \
@@ -63,7 +67,7 @@ jobs:
               --node-count 2 \
               --node-vm-size Standard_B2ms \
               --generate-ssh-keys \
-              --kubernetes-version $AKS_K8S_VERSION\ 
+              --kubernetes-version $K8S_VERSION \
               --debug
           az aks wait  \
             --name "$AZURE_CLUSTER_NAME" \
@@ -74,8 +78,6 @@ jobs:
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --file "/tmp/config" \
               --overwrite-existing
-
-          kubectl version
         env:
           AZURE_SERVICE_PRINCIPAL: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
           AZURE_SERVICE_PRINCIPAL_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
@@ -85,6 +87,7 @@ jobs:
       - name: Run tests
         working-directory: ${{ github.repository }}
         run: |
+          kubectl version
           go test -count 1 -timeout 1h55m -race -v ./... -parallel 4
         env:
           KUBECONFIG: /tmp/config
