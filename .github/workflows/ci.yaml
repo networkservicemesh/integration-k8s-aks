@@ -54,7 +54,7 @@ jobs:
         working-directory: ${{ github.repository }}
         run: |
           az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
-          
+
           AKS_K8S_VERSION=$(echo ${{ vars.NSM_KUBERNETES_VERSION }} | cut -d '.' -f 1,2 | cut -c 2-)
 
           az aks create \
