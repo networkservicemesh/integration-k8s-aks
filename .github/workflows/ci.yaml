@@ -49,6 +49,14 @@ jobs:
         working-directory: ${{ github.repository }}
         run: |
           az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
+          
+          K8S_VERSION=$(echo ${{ vars.NSM_KUBERNETES_VERSION }} | cut -d '.' -f 1,2 | cut -c 2-)
+          k8S_VERSION=1.28
+          AKS_K8S_VERSION=$(az aks get-versions --location westus | jq '.orchestrators[].orchestratorVersion' | grep -m 1 ${K8S_VERSION})
+
+          echo $K8S_VERSION
+          echo $AKS_K8S_VERSION
+
           az aks create \
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --name "$AZURE_CLUSTER_NAME" \
@@ -65,6 +73,8 @@ jobs:
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --file "/tmp/config" \
               --overwrite-existing
+
+          kubectl version
         env:
           AZURE_SERVICE_PRINCIPAL: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
           AZURE_SERVICE_PRINCIPAL_SECRET: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
