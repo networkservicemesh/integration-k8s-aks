@@ -45,6 +45,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: ${{ github.repository }}
+      - name: Install kubectl
+        run: |
+            curl -LO https://dl.k8s.io/release/${{ vars.NSM_KUBERNETES_VERSION }}/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
       - name: Setup AKS cluster
         working-directory: ${{ github.repository }}
         run: |
