@@ -45,16 +45,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: ${{ github.repository }}
+      - name: Install kubectl
+        run: |
+            curl -LO https://dl.k8s.io/release/${{ vars.NSM_KUBERNETES_VERSION }}/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
       - name: Setup AKS cluster
         working-directory: ${{ github.repository }}
         run: |
           az login --service-principal --username ${AZURE_SERVICE_PRINCIPAL} --password ${AZURE_SERVICE_PRINCIPAL_SECRET} --tenant ${AZURE_TENANT}
+
+          AKS_K8S_VERSION=$(echo ${{ vars.NSM_KUBERNETES_VERSION }} | cut -d '.' -f 1,2 | cut -c 2-)
+
           az aks create \
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --name "$AZURE_CLUSTER_NAME" \
               --node-count 2 \
               --node-vm-size Standard_B2ms \
               --generate-ssh-keys \
+              --kubernetes-version $AKS_K8S_VERSION \
               --debug
           az aks wait  \
             --name "$AZURE_CLUSTER_NAME" \
@@ -74,6 +83,7 @@ jobs:
       - name: Run tests
         working-directory: ${{ github.repository }}
         run: |
+          kubectl version
           go test -count 1 -timeout 1h55m -race -v ./... -parallel 4
         env:
           KUBECONFIG: /tmp/config
